@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import reactLogo from "./assets/react.svg";
 import "./App.css";
 
 const braileAlph = {
@@ -30,6 +29,8 @@ const braileAlph = {
   x: "110011",
   y: "110111",
   z: "100111",
+  mayus: "010001",
+  number: "010111",
 };
 
 const braileCharGenerator = (char) => {
@@ -37,7 +38,16 @@ const braileCharGenerator = (char) => {
     .split("")
     .map((number, index) => {
       return (
-        <div key={`circle-${index}`} className={`circulos active${number}`} />
+        <div
+          key={`circle-${index}`}
+          className={`circulos ${
+            char != "mayus"
+              ? "active" + number
+              : number != "0"
+              ? "circleGreen"
+              : "active" + number
+          }`}
+        />
       );
     });
 
@@ -52,6 +62,7 @@ function App() {
   const [char, setChar] = useState("");
   const [allButtons, setAllButtons] = useState("");
   const [isMayus, setIsMayus] = useState(false);
+  const [braileOption, setBraileOption] = useState("");
 
   const handleClick = (e) => {
     const value = e.target.innerText;
@@ -73,9 +84,13 @@ function App() {
     if (!isMayus) {
       setAlphabet(alphabetBase.toUpperCase().split(""));
       setAllButtons(buttons());
+      setBraileOption(braileCharGenerator("mayus"));
+      setLetter(letter.toUpperCase());
     } else {
       setAlphabet(alphabetBase.split(""));
       setAllButtons(buttons());
+      setBraileOption("");
+      setLetter(letter.toLowerCase());
     }
   };
 
@@ -85,11 +100,14 @@ function App() {
 
   return (
     <>
-      <h1>Braile</h1>
+      <h1>Braille</h1>
       <div style={buttonBox}>{allButtons}</div>
       <div>
         <h2>{letter}</h2>
-        {char}
+        <div className="braileBoxes">
+          {isMayus ? braileOption : null}
+          {char}
+        </div>
       </div>
       <button onClick={handleMayus}>MAYUS</button>
     </>
